@@ -5,8 +5,13 @@
   "main": "index.js",
   "repository": "git@github.com:concrete-wow/api.git",
   "author": "Rob Pickering <rob@pickering.org>",
-  "license": "BSD-3",
+  "license": "BSD-3-Clause",
   "private": false,
+  "scripts": {
+    "start": "node index.js",
+    "build": "echo no-op",
+    "test": "echo yep, they would be good"
+  },
   "dependencies": {
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
