@@ -1,6 +1,7 @@
 // grab the packages we need
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8080;
 
@@ -29,6 +30,7 @@ const options = {
 const swaggerSpec = swaggerJSDoc(options);
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
 /**
