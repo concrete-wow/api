@@ -1,0 +1,21 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "description": "Factually.dev api from ConcreteWow",
+  "main": "index.js",
+  "repository": "git@github.com:concrete-wow/api.git",
+  "author": "Rob Pickering <rob@pickering.org>",
+  "license": "BSD-3",
+  "private": false,
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4"
+  },
+  "devDependencies": {
+    "supertest": "^4.0.2",
+    "tape": "^5.0.0",
+    "tape-promise": "^4.0.0"
+  }
+}
