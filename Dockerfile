@@ -1,0 +1,15 @@
+# Dockerfile to build a production container which listens on port as defined by environment variable
+
+FROM node:alpine
+
+EXPOSE $PORT
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN yarn install
+COPY . .
+RUN yarn build
+
+
+CMD [ "yarn", "start" ]
