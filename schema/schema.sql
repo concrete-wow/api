@@ -8,7 +8,8 @@ CREATE TABLE url (
   domain varchar(255),
   crawler_rank integer,
   calculated integer,
-  last_read date
+  last_read date,
+  intrinsic_trustworthiness integer
 );
 CREATE TABLE link (
   src text NOT NULL REFERENCES url (url),
