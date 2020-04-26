@@ -35,7 +35,7 @@ const config = localConfig || {
 
 gcloud_patch = (process.env.INSTANCE_CONNECTION_NAME) ? {
     database: {
-      host: `/cloudsql/${process.env.INSTANCE_CONNECTION_NAME}`,
+      host: `/cloudsql/${process.env.CLOUD_SQL_CONNECTION_NAME}`,
       database: process.env.DB_NAME,
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
