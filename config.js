@@ -23,14 +23,24 @@ const config = localConfig || {
       user: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       ssl: {
-        key: process.env.CLIENT_KEY+'\n',
-        cert: process.env.CLIENT_CERT+'\n',
-        ca: process.env.CA_CERT+'\n',
-        rejectUnauthorized : false
+        key: process.env.CLIENT_KEY + '\n',
+        cert: process.env.CLIENT_CERT + '\n',
+        ca: process.env.CA_CERT + '\n',
+        rejectUnauthorized: false
       }
 
     }
   }
 };
 
-exports = module.exports = { ...config['all'], ...config[process.env.NODE_ENV || 'development'] };
+gcloud_patch = (process.env.INSTANCE_CONNECTION_NAME) ? {
+    database: {
+      host: process.env.INSTANCE_CONNECTION_NAME,
+      database: process.env.DB_NAME,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+    }
+  } :
+  {};
+
+exports = module.exports = { ...config['all'], ...config[process.env.NODE_ENV || 'development'], ...gcloud_patch };
