@@ -36,7 +36,7 @@ const config = localConfig || {
 // We are no different.
 // This a fudge around the fact that it is hard to use a proper database connection
 // with GCP cloud run (containers) due to the secrets we have to pass for client authed
-// SSL connections (which are the only way to do psql on the Internet).
+// SSL connections. This is really the only way to do psql on the Internet.
 // So we do UNIX domain SQL socket to access our DB in their environment with
 // a database connector that they provide.
 gcloud_patch = (process.env.INSTANCE_CONNECTION_NAME) ? {

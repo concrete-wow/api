@@ -180,7 +180,6 @@ app.get('/reputation', function (req, res, next) {
  */
 app.post('/report', function (req, res, next) {
   try {
-    res.setHeader('Content-Type', 'application/json');
     if (Math.random() > 0.5) {
       res.status(200)
         .send(JSON.stringify({ status: 'OK' }));
@@ -236,7 +235,8 @@ app.post('/insert', function (req, res, next) {
     res.status(500)
       .json({ error: 'parameter error' });
   } else {
-    db.none('insert into url (url, domain, crawler_rank) values ($1, $2, $3)', [url, domain, rating])
+    dbRating = Math.sign(parseInt(rating))*10000;
+    db.none('insert into url (url, domain, crawler_rank) values ($1, $2, $3)', [url, domain, dbRating])
       .then(() => res.status(200)
         .json({ status: 'OK' }))
       .catch(err => res.status(500)

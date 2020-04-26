@@ -8,7 +8,7 @@ function sql(file) {
 
 var schema = {
   version: 1,
-  versionQuery: "SELECT value from parameters where name = 'version';",
+  versionQuery: "SELECT value from parameters where name = 'version'",
   create: sql('schema.sql')
 }
 
