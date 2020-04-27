@@ -19,10 +19,12 @@ const swaggerDefinition = {
     // API informations (required)
     title: 'Factually.dev API', // Title (required)
     version: '0.0.1', // Version (required)
-    description: 'News varacity API, see www.factually.dev', // Description (optional)
+    description: `Factually link reputation API, produced by Team [Concrete Wow](https://github.com/concrete-wow) for the
+    [EUvsVirus](https://euvsvirus.org/) hacakathon on 24-26th April 2020. See [Factually.dev](https://www.factually.dev) for info and example
+    implementation`
   },
   // host:'api.factually.dev', // Host (optional)
-  basePath: '/', // Base path (optional)
+  // basePath: '/', // Base path (optional)
 };
 
 const options = {
@@ -46,9 +48,10 @@ app.use(bodyParser.json())
  *     properties:
  *       basisURL:
  *         type: string
- *         description: basis of this reputation (may be different to request URL)
+ *         description: URL which forms the basis of this reputation (may be different to request URL)
  *       safe:
  *         type: string
+ *         description: Simple string which describes what we know about the site (if anything)
  *         enum: ["good", "unknown", "bad"]
  *       distance:
  *         type: integer
@@ -64,6 +67,7 @@ app.use(bodyParser.json())
  *         example: https:/faknewssite.nodomain/drinkbleach.html
  *       disposition:
  *         description: what we want to report
+ *         type: string
  *         required: true
  *         enum: ['falseBad', 'falseGood', 'missing']
  *         example: falseGood
@@ -76,7 +80,7 @@ app.use(bodyParser.json())
  *     type: object
  *     properties:
  *       apiKey:
- *         description: API key
+ *         description: API key needed to authenticate priviledged operations
  *         required: true
  *         type: string
  *       url:
@@ -86,10 +90,9 @@ app.use(bodyParser.json())
  *         format: url
  *         example: https://faknewssite.nodomain/drinkbleach.html
  *       rating:
- *         description: the value to assign to this URL
+ *         description: The value to assign to this URL - positive (good) or negative (bad)
  *         required: true
  *         type: integer
- *         example: -65535
  *   Error:
  *     type: object
  *     properties:
@@ -105,7 +108,12 @@ app.use(bodyParser.json())
  *
  * /reputation:
  *   get:
- *     description: gets the reputation of a given URL
+ *     description: Returns the reputation of the passed URL (if known). Three return values are possible
+ *       (see 'safe' property of Reputation response) which enumerate known bad, known good, or just unknown
+ *       reputation sites. The diameter result may tell you something about the safety of this judgment, but
+ *       at present the implementation is in flux so is best ignored.
+ *     tags:
+ *       - getting
  *     produces:
  *       - application/json
  *     parameters:
@@ -155,7 +163,11 @@ app.get('/reputation', function (req, res, next) {
  *
  * /report:
  *   post:
- *     description: flags a report about a URL
+ *     description: Flags a report about a URL, designed to collate information for a human
+ *       to review and insert into the database of good or bad sites manually via a magic process
+ *       that hasn't been designed or coded yet. At present this is just a stub which does nothing!
+ *     tags:
+ *       - reporting
  *     produces:
  *       - application/json
  *     consumes:
@@ -197,7 +209,12 @@ app.post('/report', function (req, res, next) {
  *
  * /insert:
  *   post:
- *     description: flags a report about a URL
+ *     description: Directly insert a new 'seed' site into the database, designed
+ *       for apps used by human maintainers to insert new known "good" or "bad" sites
+ *       into the database. Once inserted, crawler will do it's work and start to find
+ *       internal links and related sites.
+ *     tags:
+ *       - maintenance
  *     produces:
  *       - application/json
  *     consumes:
