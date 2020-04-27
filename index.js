@@ -137,6 +137,10 @@ app.use(bodyParser.json())
 app.get('/reputation', function (req, res, next) {
   const url = req.query.url;
   const { protocol, host } = req.query.url && urlParser.parse(req.query.url);
+  if (protocol == null && host == null){
+    res.status(400).json({message: 'malformed url'});
+  }
+  else{
   db.one("select url, crawler_rank from url where domain ilike $1 LIMIT 1", [host])
     .then(row => {
             console.log('row', row);
@@ -156,6 +160,7 @@ app.get('/reputation', function (req, res, next) {
           distance: 0
         })
     })
+  }
 });
 
 /**
