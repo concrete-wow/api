@@ -53,9 +53,14 @@ app.use(bodyParser.json())
  *         type: string
  *         description: Simple string which describes what we know about the site (if anything)
  *         enum: ["good", "unknown", "bad"]
+ *       score:
+ *         type: integer
+ *         description: The sites score, according to our algorithm, 0 = known bad, 1000 = known good.
+ *           good/bad threshold currently arbitrarily set at 600.
  *       distance:
  *         type: integer
- *         description: graph distance from a known site, small numbers indicate a close relationship with a known good or bad site
+ *         description: Graph distance from a known site, small numbers indicate
+ *           a close relationship with a known good or bad site
  *   Report:
  *     type: object
  *     properties:
@@ -110,7 +115,8 @@ app.use(bodyParser.json())
  *   get:
  *     description: Returns the reputation of the passed URL (if known). Three return values are possible
  *       (see 'safe' property of Reputation response) which enumerate known bad, known good, or just unknown
- *       reputation sites. The diameter result may tell you something about the safety of this judgment, but
+ *       reputation sites. A score is returned which reflects the level of confidence we have in this judgement.
+ *       The diameter result may also tell you something about the safety of this judgment, but
  *       at present the implementation is in flux so is best ignored.
  *     tags:
  *       - getting
@@ -137,29 +143,30 @@ app.use(bodyParser.json())
 app.get('/reputation', function (req, res, next) {
   const url = req.query.url;
   const { protocol, host } = req.query.url && urlParser.parse(req.query.url);
-  if (protocol == null && host == null){
-    res.status(400).json({message: 'malformed url'});
-  }
-  else{
-  db.one("select url, crawler_rank from url where domain ilike $1 LIMIT 1", [host])
-    .then(row => {
-            console.log('row', row);
-      res.status(200)
-        .json({
-          basisURL: row.url,
-          safe: ["bad", "unknown", "good"][Math.sign(row.crawler_rank) + 1],
-          distance: row.crawler_rank
-        })
-    })
-    .catch((err, e) => {
-      console.log('err', err, err.query);
-      res.status(200)
-        .json({
-          basisURL: `${protocol}//${host}`,
-          safe: "unknown",
-          distance: 0
-        })
-    })
+  if (protocol == null && host == null) {
+    res.status(400)
+      .json({ message: 'malformed url' });
+  } else {
+    db.one("select url, crawler_rank calculated from url where domain ilike $1 LIMIT 1", [host])
+      .then(row => {
+        console.log('row', row);
+        res.status(200)
+          .json({
+            basisURL: row.url,
+            safe: row.calculated >= config.threshold ? "good" : "bad",
+            distance: row.crawler_rank,
+            calculated: row.calculated
+          })
+      })
+      .catch((err, e) => {
+        console.log('err', err, err.query);
+        res.status(200)
+          .json({
+            basisURL: `${protocol}//${host}`,
+            safe: "unknown",
+            distance: 0
+          })
+      })
   }
 });
 
@@ -257,7 +264,7 @@ app.post('/insert', function (req, res, next) {
     res.status(500)
       .json({ error: 'parameter error' });
   } else {
-    dbRating = Math.sign(parseInt(rating))*10000;
+    dbRating = Math.sign(parseInt(rating)) * 10000;
     db.none('insert into url (url, domain, crawler_rank) values ($1, $2, $3)', [url, domain, dbRating])
       .then(() => res.status(200)
         .json({ status: 'OK' }))

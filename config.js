@@ -14,6 +14,9 @@ const config = localConfig || {
 
   },
   "all": {
+    // Good/bad threshold based on calculated
+    threshold: 600,
+    // API key used for authenticated insert calls
     api_key: process.env.APIKEY,
     database: {
       host: process.env.DB_HOST,
