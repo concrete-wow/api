@@ -16,15 +16,13 @@ const db = require('./lib/database.js');
 
 const swaggerDefinition = {
   info: {
-    // API informations (required)
-    title: 'Factually.dev API', // Title (required)
-    version: '0.0.1', // Version (required)
-    description: `Factually link reputation API, produced by Team [Concrete Wow](https://github.com/concrete-wow) for the
-    [EUvsVirus](https://euvsvirus.org/) hacakathon on 24-26th April 2020. See [Factually.dev](https://www.factually.dev) for info and example
-    implementation`
+    // API information fpr swagger docs
+    title: 'Factually.dev API',
+    version: '0.0.1',
+    description: `Factually link reputation API, produced by Team [Concrete Wow](https://github.com/concrete-wow)
+      for the [EUvsVirus](https://euvsvirus.org/) hacakathon on 24-26th April 2020.
+      See [Factually.dev](https://www.factually.dev) for example front end implementation.`
   },
-  // host:'api.factually.dev', // Host (optional)
-  // basePath: '/', // Base path (optional)
 };
 
 const options = {
@@ -147,7 +145,7 @@ app.get('/reputation', function (req, res, next) {
     res.status(400)
       .json({ message: 'malformed url' });
   } else {
-    db.one("select url, crawler_rank calculated from url where domain ilike $1 LIMIT 1", [host])
+    db.one("select url, crawler_rank, calculated from url where domain ilike $1 LIMIT 1", [host])
       .then(row => {
         console.log('row', row);
         res.status(200)
