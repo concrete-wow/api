@@ -7,9 +7,10 @@ function sql(file) {
 }
 
 var schema = {
-  version: 1,
+  version: 2,
   versionQuery: "SELECT value from parameters where name = 'version'",
-  create: sql('schema.sql')
+  create: sql('schema.sql'),
+  update: (from, to) => sql(`update.${from}.${to}.sql`)
 }
 
 schema.updates = [];

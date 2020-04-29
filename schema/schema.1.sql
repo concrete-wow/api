@@ -12,8 +12,8 @@ CREATE TABLE url (
   intrinsic_trustworthiness integer
 );
 CREATE TABLE link (
-  src text NOT NULL REFERENCES url (url) ON UPDATE CASCADE ON DELETE CASCADE,
-  dst text NOT NULL REFERENCES url (url) ON UPDATE CASCADE ON DELETE CASCADE,
+  src text NOT NULL REFERENCES url (url),
+  dst text NOT NULL REFERENCES url (url),
   crawler_blessing integer,
   calculated integer,
   last_read date,
